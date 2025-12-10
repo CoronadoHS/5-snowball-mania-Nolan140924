@@ -1,14 +1,16 @@
 ''' 
     Name: Snowball-Mania
-    Author: 
-    Date: 
+    Author: Nolan
+    Date: 12/5/2025
     Class: AP Computer Science Principles
-    Python: 
+    Python: Python 3.13
 '''
 
 import random
 import time
+import colorama
 
+colorama.init(True)
 
 def printIntro():
     '''
@@ -37,6 +39,17 @@ def getNames():
     ' Return: the list of player names
     ' 
     '''
+    print("\n")
+    Players = [input("What is your name?: ")]
+    while True:
+        player = input("Give a player name(Leave blank if finished): ")
+        if player == "":
+            break
+        else:
+            Players.append(player)
+    print("\n")
+    return Players
+        
 
 
 def getThrower(players):
@@ -47,6 +60,7 @@ def getThrower(players):
     '
     ' Return: player name
     '''
+    return random.choice(players)
 
     
 def getVictim(players, t):
@@ -59,6 +73,8 @@ def getVictim(players, t):
     '
     ' Return: victim's name
     '''
+    Victim = random.choice(players)
+    return Victim != t and Victim or getVictim(players, t)
 
 
 def getHitResult():
@@ -71,7 +87,8 @@ def getHitResult():
     '
     ' Return: Boolean representing whether or not the snowball hit
     '''
-    
+    return random.randint(1, 10) > 6
+
 
 def playSnowballFight(players):
     '''
@@ -89,6 +106,24 @@ def playSnowballFight(players):
     ' 
     ' Return: none
     '''
+    while len(players) > 1:
+        Thrower = getThrower(players)
+        Victim = getVictim(players, Thrower)
+        Hit = getHitResult()
+        if Hit:
+            if random.randint(0, 1) == 1:
+                Endings = (" Will they get up..? probably not..", " HOW!?", " They're done for the day.", " No more snowballs for them..")
+                print(colorama.Fore.RED + f"{Thrower} knocked out {Victim}!" + random.choice(Endings))
+                players.remove(Victim)
+            else:
+                Endings = (" They don't look so good anymore.", " And they just dusted it off..", " Ow!")
+                print(colorama.Fore.GREEN + f"{Victim} was hit by {Thrower}!" + colorama.Fore.YELLOW + random.choice(Endings))
+        else:
+            Endings = (" just barely.", " horribly!", ", were they even aiming?", ", but hit that person's window, ouch..")
+            print(colorama.Fore.YELLOW + f"{Thrower} missed {Victim}" + random.choice(Endings))
+
+        time.sleep(3)
+
 
     
 def printOutro(winner):
@@ -115,3 +150,9 @@ def runProgram():
     '
     ' Return: none
     '''
+    printIntro()
+    players = getNames()
+    playSnowballFight(players)
+    printOutro(players[0])
+
+runProgram()
